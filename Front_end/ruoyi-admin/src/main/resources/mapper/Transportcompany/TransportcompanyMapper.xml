@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.Transportcompany.mapper.TransportcompanyMapper">
+    
+    <resultMap type="Transportcompany" id="TransportcompanyResult">
+        <result property="companyId"    column="company_id"    />
+        <result property="name"    column="name"    />
+        <result property="contactNumber"    column="contact_number"    />
+        <result property="address"    column="address"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTransportcompanyVo">
+        select company_id, name, contact_number, address, status, create_time, update_time from transportcompany
+    </sql>
+
+    <select id="selectTransportcompanyList" parameterType="Transportcompany" resultMap="TransportcompanyResult">
+        <include refid="selectTransportcompanyVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="contactNumber != null  and contactNumber != ''"> and contact_number = #{contactNumber}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectTransportcompanyByCompanyId" parameterType="Long" resultMap="TransportcompanyResult">
+        <include refid="selectTransportcompanyVo"/>
+        where company_id = #{companyId}
+    </select>
+
+    <insert id="insertTransportcompany" parameterType="Transportcompany" useGeneratedKeys="true" keyProperty="companyId">
+        insert into transportcompany
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="contactNumber != null">contact_number,</if>
+            <if test="address != null">address,</if>
+            <if test="status != null and status != ''">status,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="contactNumber != null">#{contactNumber},</if>
+            <if test="address != null">#{address},</if>
+            <if test="status != null and status != ''">#{status},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTransportcompany" parameterType="Transportcompany">
+        update transportcompany
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="contactNumber != null">contact_number = #{contactNumber},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where company_id = #{companyId}
+    </update>
+
+    <delete id="deleteTransportcompanyByCompanyId" parameterType="Long">
+        delete from transportcompany where company_id = #{companyId}
+    </delete>
+
+    <delete id="deleteTransportcompanyByCompanyIds" parameterType="String">
+        delete from transportcompany where company_id in 
+        <foreach item="companyId" collection="array" open="(" separator="," close=")">
+            #{companyId}
+        </foreach>
+    </delete>
+</mapper>
